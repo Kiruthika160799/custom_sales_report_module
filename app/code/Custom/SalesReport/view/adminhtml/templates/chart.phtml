@@ -1,0 +1,45 @@
+<?php
+$salesData = $block->getSalesData();
+$salesDataJson = json_encode($salesData);
+?>
+
+<div style="width: 80%; margin: 0 auto;">
+    <canvas id="salesChart"></canvas>
+</div>
+
+<script type="text/javascript">
+    require(['jquery', 'chartJs'], function($, Chart) {
+        $(document).ready(function () {
+            var salesData = <?php echo $salesDataJson; ?>;
+
+            var labels = salesData.map(function(data) {
+                return data.sale_date;
+            });
+
+            var revenue = salesData.map(function(data) {
+                return data.total_revenue;
+            });
+
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Revenue',
+                        data: revenue,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    });
+</script>
